@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 import { createTransaction } from "./graphql/mutations";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import { listTransactions } from './graphql/queries';
-
+// import { GraphQLResult } from '@aws-amplify/api-graphql';
 
 Amplify.configure(config);
 
@@ -47,7 +47,13 @@ function App() {
     }
 
     async function fetchTransactions() {
-        const apiData = await API.graphql({ query: listTransactions });
+        const apiData = await API.graphql({ query: listTransactions }) as {
+            data: {
+                listTransactions: {
+                    items: TransactionRecord[];
+                }
+            }
+        };
         const transactionList: TransactionRecord[]  = apiData.data.listTransactions.items;
         console.log(transactionList);
         setTransactions(transactionList);
