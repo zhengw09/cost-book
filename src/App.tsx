@@ -1,6 +1,12 @@
 import React from 'react';
 import './App.css';
 import { useTable } from "react-table";
+import Amplify from 'aws-amplify';
+import config from './aws-exports';
+import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
+
+
+Amplify.configure(config);
 
 type TransactionRecord = {
     symbol: string;
@@ -83,6 +89,7 @@ function App() {
       })
 
       return (
+          <div>
         <table {...getTableProps()}>
           <thead>
             {headerGroups.map(headerGroup => (
@@ -106,7 +113,9 @@ function App() {
             })}
           </tbody>
         </table>
+        <AmplifySignOut />
+        </div>
     );
 }
 
-export default App;
+export default withAuthenticator(App);
