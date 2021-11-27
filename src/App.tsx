@@ -1,29 +1,61 @@
-import React from 'react';
 import './App.css';
-import { useTable } from "react-table";
 import Amplify from 'aws-amplify';
 import config from './aws-exports';
-import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
+import { withAuthenticator } from '@aws-amplify/ui-react';
+import { API } from 'aws-amplify';
+import Table, { ColumnDefinition, TransactionRecord } from "./components/Table";
+import Modal from "./components/Modal";
+import { useEffect, useState } from 'react';
+import { createTransaction } from "./graphql/mutations";
+import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
+import { listTransactions } from './graphql/queries';
 
 
 Amplify.configure(config);
 
-type TransactionRecord = {
-    symbol: string;
-    date: string;
-    price: number;
-    quantity: number;
-    totalQuantity: number;
-    costBasis: number;
-    totalCost: number;
-}
-
-type ColumnDefinition<T, K extends keyof T> = {
-    Header: string;
-    accessor: K;
-}
-
 function App() {
+
+    const [ modal, setModal ] = useState(false);
+    const [ symbol, setSymbol ] = useState("");
+    const [ date, setDate ] = useState("");
+    const [ price, setPrice ] = useState<string | number>("");
+    const [ quantity, setQuantity ] = useState<string | number>("");
+    const [ transactions, setTransactions ] = useState<TransactionRecord[]>([]);
+
+    async function createTransactionHandler() {
+        console.log(symbol, date, price, quantity);
+        const costBasis = parseNumber(price);
+        const totalQuantity = parseNumber(quantity);
+        const totalCost = costBasis * totalQuantity;
+        await API.graphql({ 
+            query: createTransaction, 
+            variables: { input: {symbol, date, price, quantity, costBasis, totalQuantity, totalCost}},
+         });
+        setSymbol("");
+        setDate("");
+        setPrice("");
+        setQuantity("");
+        fetchTransactions();
+        setModal(false);
+    }
+
+    function parseNumber(input: string | number): number {
+        if (typeof(input) === "string") {
+            return parseFloat(input);
+        }
+        return input
+    }
+
+    async function fetchTransactions() {
+        const apiData = await API.graphql({ query: listTransactions });
+        const transactionList: TransactionRecord[]  = apiData.data.listTransactions.items;
+        console.log(transactionList);
+        setTransactions(transactionList);
+      }
+
+    useEffect(() => {
+        fetchTransactions();
+      }, []);
 
     const columns: ColumnDefinition<TransactionRecord, keyof TransactionRecord>[] = [
         {
@@ -56,64 +88,76 @@ function App() {
         }
     ]
 
-    const data: TransactionRecord[] = [
-        {
-            symbol: "TEST",
-            date: "20211124",
-            price: 10,
-            quantity: 100,
-            totalQuantity: 100,
-            costBasis: 10,
-            totalCost: 10,
-        },
-        {
-            symbol: "TEST",
-            date: "20211124",
-            price: 10,
-            quantity: 100,
-            totalQuantity: 100,
-            costBasis: 10,
-            totalCost: 10,
-        }
-    ];
+    // const data: TransactionRecord[] = [
+    //     {
+    //         symbol: "TEST",
+    //         date: "20211124",
+    //         price: 10,
+    //         quantity: 100,
+    //         totalQuantity: 100,
+    //         costBasis: 10,
+    //         totalCost: 10,
+    //     },
+    //     {
+    //         symbol: "TEST",
+    //         date: "20211124",
+    //         price: 10,
+    //         quantity: 100,
+    //         totalQuantity: 100,
+    //         costBasis: 10,
+    //         totalCost: 10,
+    //     }
+    // ];
 
-    const {
-        getTableProps,
-        getTableBodyProps,
-        headerGroups,
-        rows,
-        prepareRow,
-      } = useTable({
-        columns,
-        data,
-      })
+    return (
+        <div className="App">
+            <div>
+                <Table columns={columns} data={transactions} />
+            </div>
+            <div>
+                <button onClick={() => setModal(true)}>Add</button>
+            </div>
+            <Modal show={modal}>
 
-      return (
-          <div>
-        <table {...getTableProps()}>
-          <thead>
-            {headerGroups.map(headerGroup => (
-              <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map(column => (
-                  <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody {...getTableBodyProps()}>
-            {rows.map((row, i) => {
-              prepareRow(row)
-              return (
-                <tr {...row.getRowProps()}>
-                  {row.cells.map(cell => {
-                    return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                  })}
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-        <AmplifySignOut />
+                <form>
+                    <div className="form-group row">
+                        <label htmlFor="input-symbol" className="col-sm-2 col-form-label">Symbol</label>
+                        <div className="col-sm-10">
+                        <input type="text" className="form-control" id="input-symbol" 
+                            onChange={(e) => setSymbol(e.target.value)} value={symbol}/>
+                        </div>
+                    </div>
+
+                    <div className="form-group row">
+                        <label htmlFor="input-date" className="col-sm-2 col-form-label">Date</label>
+                        <div className="col-sm-10">
+                        <input type="date" className="form-control" id="input-date" 
+                            onChange={(e) => setDate(e.target.value)} value={date}/>
+                        </div>
+                    </div>
+
+                    <div className="form-group row">
+                        <label htmlFor="input-price" className="col-sm-2 col-form-label">Price</label>
+                        <div className="col-sm-10">
+                        <input type="number" className="form-control" id="input-price" step="0.00000001"
+                            onChange={(e) => setPrice(e.target.value)} value={price}/>
+                        </div>
+                    </div>
+
+                    <div className="form-group row">
+                        <label htmlFor="input-quantity" className="col-sm-2 col-form-label">Quantity</label>
+                        <div className="col-sm-10">
+                        <input type="number" className="form-control" id="input-quantity" step="0.00000001"
+                            onChange={(e) => setQuantity(e.target.value)} value={quantity}/>
+                        </div>
+                    </div>
+
+                    <div className="modal-footer">
+                        <input className="btn btn-primary" type="button" value="Submit" onClick={createTransactionHandler} />
+                        <input className="btn btn-secondary" type="button" value="Cancel" onClick={() => setModal(false)} />
+                    </div>
+                </form>
+            </Modal>
         </div>
     );
 }

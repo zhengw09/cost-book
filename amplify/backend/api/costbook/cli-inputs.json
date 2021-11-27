@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "serviceConfiguration": {
+    "apiName": "costbook",
+    "serviceName": "AppSync",
+    "gqlSchemaPath": "/Volumes/workplace/playground/cost-book/amplify/backend/api/costbook/schema.graphql",
+    "defaultAuthType": {
+      "mode": "API_KEY",
+      "expirationTime": 7
+    }
+  }
+}
