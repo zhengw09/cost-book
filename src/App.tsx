@@ -2,14 +2,12 @@ import './App.css';
 import Amplify from 'aws-amplify';
 import config from './aws-exports';
 import { withAuthenticator } from '@aws-amplify/ui-react';
-import { API } from 'aws-amplify';
-import Table, { ColumnDefinition, TransactionRecord } from "./components/Table";
+import PositionsTable, { SymbolPosition, positionColumns } from "./components/Table";
 import Modal from "./components/Modal";
 import { useEffect, useState } from 'react';
-import { createTransaction } from "./graphql/mutations";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
-import { listTransactions } from './graphql/queries';
-// import { GraphQLResult } from '@aws-amplify/api-graphql';
+import { addSymbolPosition, addTransaction, getAllPositions, updateSymbolPosition } from './utils/api';
+import { getSymbolPosition, newPosition } from './utils/utils';
 
 Amplify.configure(config);
 
@@ -17,26 +15,41 @@ function App() {
 
     const [ modal, setModal ] = useState(false);
     const [ symbol, setSymbol ] = useState("");
+    const [ assetType, setAssetType ] = useState("");
     const [ date, setDate ] = useState("");
     const [ price, setPrice ] = useState<string | number>("");
     const [ quantity, setQuantity ] = useState<string | number>("");
-    const [ transactions, setTransactions ] = useState<TransactionRecord[]>([]);
+    const [ positions, setPositions ] = useState<SymbolPosition[]>([]);
 
-    async function createTransactionHandler() {
-        console.log(symbol, date, price, quantity);
-        const costBasis = parseNumber(price);
-        const totalQuantity = parseNumber(quantity);
-        const totalCost = costBasis * totalQuantity;
-        await API.graphql({ 
-            query: createTransaction, 
-            variables: { input: {symbol, date, price, quantity, costBasis, totalQuantity, totalCost}},
-         });
+    async function addTransactionHandler() {
+        console.log(symbol, date, price, quantity, positions);
+        let costBasis, totalQuantity, totalCost, transactionId;
+        console.log(newPosition(symbol, positions));
+        if (newPosition(symbol, positions)) {
+            transactionId = 1;
+            costBasis = parseNumber(price);
+            totalQuantity = parseNumber(quantity);
+            totalCost = costBasis * totalQuantity;
+            await addSymbolPosition({symbol, assetType, costBasis, quantity: totalQuantity, totalCost, transactionCount: transactionId});
+        } else {
+            const symbolPosition = getSymbolPosition(symbol, positions)!;
+            transactionId = symbolPosition.transactionCount + 1;
+            totalQuantity = symbolPosition.quantity + parseNumber(quantity);
+            totalCost = symbolPosition.totalCost + parseNumber(quantity) * parseNumber(price);
+            costBasis = totalCost / totalQuantity;
+            await updateSymbolPosition({id: symbolPosition.id, costBasis, quantity: totalQuantity, totalCost, transactionCount: transactionId});
+
+        }
+
+        await addTransaction({symbol, transactionId, date, price: parseNumber(price), quantity: parseNumber(quantity), currentCostBasis: costBasis, 
+            currentTotalQuantity: totalQuantity, currentTotalCost: totalCost});
+
         setSymbol("");
         setDate("");
         setPrice("");
         setQuantity("");
-        fetchTransactions();
         setModal(false);
+        setSymbolPositions();
     }
 
     function parseNumber(input: string | number): number {
@@ -46,79 +59,20 @@ function App() {
         return input
     }
 
-    async function fetchTransactions() {
-        const apiData = await API.graphql({ query: listTransactions }) as {
-            data: {
-                listTransactions: {
-                    items: TransactionRecord[];
-                }
-            }
-        };
-        const transactionList: TransactionRecord[]  = apiData.data.listTransactions.items;
-        console.log(transactionList);
-        setTransactions(transactionList);
+    async function setSymbolPositions() {
+        const positions  = await getAllPositions();
+        console.log(positions);
+        setPositions(positions);
       }
 
     useEffect(() => {
-        fetchTransactions();
+        setSymbolPositions();
       }, []);
-
-    const columns: ColumnDefinition<TransactionRecord, keyof TransactionRecord>[] = [
-        {
-            Header: "Symbol",
-            accessor: "symbol"
-        },
-        {
-            Header: "Date",
-            accessor: "date"
-        },
-        {
-            Header: "Price",
-            accessor: "price"
-        },
-        {
-            Header: "Quantity",
-            accessor: "quantity"
-        },
-        {
-            Header: "Cost Basis",
-            accessor: "costBasis"
-        },
-        {
-            Header: "Total Quantity",
-            accessor: "totalQuantity"
-        },
-        {
-            Header: "Total Cost",
-            accessor: "totalCost"
-        }
-    ]
-
-    // const data: TransactionRecord[] = [
-    //     {
-    //         symbol: "TEST",
-    //         date: "20211124",
-    //         price: 10,
-    //         quantity: 100,
-    //         totalQuantity: 100,
-    //         costBasis: 10,
-    //         totalCost: 10,
-    //     },
-    //     {
-    //         symbol: "TEST",
-    //         date: "20211124",
-    //         price: 10,
-    //         quantity: 100,
-    //         totalQuantity: 100,
-    //         costBasis: 10,
-    //         totalCost: 10,
-    //     }
-    // ];
 
     return (
         <div className="App">
             <div>
-                <Table columns={columns} data={transactions} />
+                <PositionsTable columns={positionColumns} data={positions} />
             </div>
             <div>
                 <button onClick={() => setModal(true)}>Add</button>
@@ -131,6 +85,14 @@ function App() {
                         <div className="col-sm-10">
                         <input type="text" className="form-control" id="input-symbol" 
                             onChange={(e) => setSymbol(e.target.value)} value={symbol}/>
+                        </div>
+                    </div>
+
+                    <div className="form-group row">
+                        <label htmlFor="input-asset" className="col-sm-2 col-form-label">Asset</label>
+                        <div className="col-sm-10">
+                        <input type="test" className="form-control" id="input-asset" 
+                            onChange={(e) => setAssetType(e.target.value)} value={assetType}/>
                         </div>
                     </div>
 
@@ -159,7 +121,7 @@ function App() {
                     </div>
 
                     <div className="modal-footer">
-                        <input className="btn btn-primary" type="button" value="Submit" onClick={createTransactionHandler} />
+                        <input className="btn btn-primary" type="button" value="Submit" onClick={addTransactionHandler} />
                         <input className="btn btn-secondary" type="button" value="Cancel" onClick={() => setModal(false)} />
                     </div>
                 </form>

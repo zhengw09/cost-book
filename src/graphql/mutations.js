@@ -1,20 +1,75 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const createSymbol = /* GraphQL */ `
+  mutation CreateSymbol(
+    $input: CreateSymbolInput!
+    $condition: ModelSymbolConditionInput
+  ) {
+    createSymbol(input: $input, condition: $condition) {
+      id
+      symbol
+      assetType
+      costBasis
+      quantity
+      totalCost
+      transactionCount
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateSymbol = /* GraphQL */ `
+  mutation UpdateSymbol(
+    $input: UpdateSymbolInput!
+    $condition: ModelSymbolConditionInput
+  ) {
+    updateSymbol(input: $input, condition: $condition) {
+      id
+      symbol
+      assetType
+      costBasis
+      quantity
+      totalCost
+      transactionCount
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteSymbol = /* GraphQL */ `
+  mutation DeleteSymbol(
+    $input: DeleteSymbolInput!
+    $condition: ModelSymbolConditionInput
+  ) {
+    deleteSymbol(input: $input, condition: $condition) {
+      id
+      symbol
+      assetType
+      costBasis
+      quantity
+      totalCost
+      transactionCount
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const createTransaction = /* GraphQL */ `
   mutation CreateTransaction(
     $input: CreateTransactionInput!
     $condition: ModelTransactionConditionInput
   ) {
     createTransaction(input: $input, condition: $condition) {
-      id
       symbol
+      transactionId
       date
       price
       quantity
-      costBasis
-      totalQuantity
-      totalCost
+      currentCostBasis
+      currentTotalQuantity
+      currentTotalCost
+      id
       createdAt
       updatedAt
     }
@@ -26,14 +81,15 @@ export const updateTransaction = /* GraphQL */ `
     $condition: ModelTransactionConditionInput
   ) {
     updateTransaction(input: $input, condition: $condition) {
-      id
       symbol
+      transactionId
       date
       price
       quantity
-      costBasis
-      totalQuantity
-      totalCost
+      currentCostBasis
+      currentTotalQuantity
+      currentTotalCost
+      id
       createdAt
       updatedAt
     }
@@ -45,14 +101,15 @@ export const deleteTransaction = /* GraphQL */ `
     $condition: ModelTransactionConditionInput
   ) {
     deleteTransaction(input: $input, condition: $condition) {
-      id
       symbol
+      transactionId
       date
       price
       quantity
-      costBasis
-      totalQuantity
-      totalCost
+      currentCostBasis
+      currentTotalQuantity
+      currentTotalCost
+      id
       createdAt
       updatedAt
     }

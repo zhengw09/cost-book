@@ -1,17 +1,63 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const onCreateSymbol = /* GraphQL */ `
+  subscription OnCreateSymbol {
+    onCreateSymbol {
+      id
+      symbol
+      assetType
+      costBasis
+      quantity
+      totalCost
+      transactionCount
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateSymbol = /* GraphQL */ `
+  subscription OnUpdateSymbol {
+    onUpdateSymbol {
+      id
+      symbol
+      assetType
+      costBasis
+      quantity
+      totalCost
+      transactionCount
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteSymbol = /* GraphQL */ `
+  subscription OnDeleteSymbol {
+    onDeleteSymbol {
+      id
+      symbol
+      assetType
+      costBasis
+      quantity
+      totalCost
+      transactionCount
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const onCreateTransaction = /* GraphQL */ `
   subscription OnCreateTransaction {
     onCreateTransaction {
-      id
       symbol
+      transactionId
       date
       price
       quantity
-      costBasis
-      totalQuantity
-      totalCost
+      currentCostBasis
+      currentTotalQuantity
+      currentTotalCost
+      id
       createdAt
       updatedAt
     }
@@ -20,14 +66,15 @@ export const onCreateTransaction = /* GraphQL */ `
 export const onUpdateTransaction = /* GraphQL */ `
   subscription OnUpdateTransaction {
     onUpdateTransaction {
-      id
       symbol
+      transactionId
       date
       price
       quantity
-      costBasis
-      totalQuantity
-      totalCost
+      currentCostBasis
+      currentTotalQuantity
+      currentTotalCost
+      id
       createdAt
       updatedAt
     }
@@ -36,14 +83,15 @@ export const onUpdateTransaction = /* GraphQL */ `
 export const onDeleteTransaction = /* GraphQL */ `
   subscription OnDeleteTransaction {
     onDeleteTransaction {
-      id
       symbol
+      transactionId
       date
       price
       quantity
-      costBasis
-      totalQuantity
-      totalCost
+      currentCostBasis
+      currentTotalQuantity
+      currentTotalCost
+      id
       createdAt
       updatedAt
     }

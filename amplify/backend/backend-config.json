@@ -1,6 +1,6 @@
 {
   "auth": {
-    "costbook8f6bcc79": {
+    "costbookfaa8912e": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],

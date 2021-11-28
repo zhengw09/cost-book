@@ -1,14 +1,27 @@
 import { ReactElement } from 'react';
 import { useTable } from "react-table";
 
+export type AssetType = "Stock" | "Crypto" | string;
+
+export type SymbolPosition = {
+    id: string;
+    symbol: string;
+    assetType?: AssetType; 
+    costBasis: number;
+    quantity: number;
+    totalCost: number;
+    transactionCount: number;
+}
+
 export type TransactionRecord = {
     symbol: string;
+    transactionId: number;
     date: string;
     price: number;
     quantity: number;
-    totalQuantity: number;
-    costBasis: number;
-    totalCost: number;
+    currentCostBasis: number;
+    currentTotalQuantity: number;
+    currentTotalCost: number;
 }
 
 export type ColumnDefinition<T, K extends keyof T> = {
@@ -16,12 +29,35 @@ export type ColumnDefinition<T, K extends keyof T> = {
     accessor: K;
 }
 
-export type TableProps = {
-    columns: ColumnDefinition<TransactionRecord, keyof TransactionRecord>[];
-    data: TransactionRecord[];
+export type TableProps<T> = {
+    columns: ColumnDefinition<T, keyof T>[];
+    data: T[];
 }
 
-export default function Table(props: TableProps): ReactElement {
+export const positionColumns: ColumnDefinition<SymbolPosition, keyof SymbolPosition>[] = [
+    {
+        Header: "Symbol",
+        accessor: "symbol"
+    },
+    {
+        Header: "Type",
+        accessor: "assetType"
+    },
+    {
+        Header: "Cost Basis",
+        accessor: "costBasis"
+    },
+    {
+        Header: "Quantity",
+        accessor: "quantity"
+    },
+    {
+        Header: "Total Cost",
+        accessor: "totalCost"
+    }
+]
+
+export default function PositionsTable(props: TableProps<SymbolPosition>): ReactElement {
 
     const {
         getTableProps,
