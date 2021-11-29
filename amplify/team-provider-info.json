@@ -1,14 +1,14 @@
 {
-  "alpha": {
+  "beta": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-costbook-alpha-22426-authRole",
-      "UnauthRoleArn": "arn:aws:iam::149767675125:role/amplify-costbook-alpha-22426-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::149767675125:role/amplify-costbook-alpha-22426-authRole",
+      "AuthRoleName": "amplify-costbook-beta-231355-authRole",
+      "UnauthRoleArn": "arn:aws:iam::149767675125:role/amplify-costbook-beta-231355-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::149767675125:role/amplify-costbook-beta-231355-authRole",
       "Region": "us-west-2",
-      "DeploymentBucketName": "amplify-costbook-alpha-22426-deployment",
-      "UnauthRoleName": "amplify-costbook-alpha-22426-unauthRole",
-      "StackName": "amplify-costbook-alpha-22426",
-      "StackId": "arn:aws:cloudformation:us-west-2:149767675125:stack/amplify-costbook-alpha-22426/60065800-5035-11ec-9f37-0659a1af0681",
+      "DeploymentBucketName": "amplify-costbook-beta-231355-deployment",
+      "UnauthRoleName": "amplify-costbook-beta-231355-unauthRole",
+      "StackName": "amplify-costbook-beta-231355",
+      "StackId": "arn:aws:cloudformation:us-west-2:149767675125:stack/amplify-costbook-beta-231355/ecafdf70-50e3-11ec-900f-062117cd49c5",
       "AmplifyAppId": "dcfwvvml6xbq"
     },
     "categories": {

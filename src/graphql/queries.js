@@ -2,45 +2,47 @@
 // this is an auto generated file. This will be overwritten
 
 export const getSymbol = /* GraphQL */ `
-  query GetSymbol($id: ID!) {
-    getSymbol(id: $id) {
-      id
+  query GetSymbol($symbol: String!) {
+    getSymbol(symbol: $symbol) {
       symbol
       assetType
       costBasis
       quantity
       totalCost
       transactionCount
-      createdAt
-      updatedAt
     }
   }
 `;
 export const listSymbols = /* GraphQL */ `
   query ListSymbols(
+    $symbol: String
     $filter: ModelSymbolFilterInput
     $limit: Int
     $nextToken: String
+    $sortDirection: ModelSortDirection
   ) {
-    listSymbols(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    listSymbols(
+      symbol: $symbol
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      sortDirection: $sortDirection
+    ) {
       items {
-        id
         symbol
         assetType
         costBasis
         quantity
         totalCost
         transactionCount
-        createdAt
-        updatedAt
       }
       nextToken
     }
   }
 `;
 export const getTransaction = /* GraphQL */ `
-  query GetTransaction($id: ID!) {
-    getTransaction(id: $id) {
+  query GetTransaction($symbol: String!, $transactionId: Int!) {
+    getTransaction(symbol: $symbol, transactionId: $transactionId) {
       symbol
       transactionId
       date
@@ -49,7 +51,6 @@ export const getTransaction = /* GraphQL */ `
       currentCostBasis
       currentTotalQuantity
       currentTotalCost
-      id
       createdAt
       updatedAt
     }
@@ -57,11 +58,21 @@ export const getTransaction = /* GraphQL */ `
 `;
 export const listTransactions = /* GraphQL */ `
   query ListTransactions(
+    $symbol: String
+    $transactionId: ModelIntKeyConditionInput
     $filter: ModelTransactionFilterInput
     $limit: Int
     $nextToken: String
+    $sortDirection: ModelSortDirection
   ) {
-    listTransactions(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    listTransactions(
+      symbol: $symbol
+      transactionId: $transactionId
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      sortDirection: $sortDirection
+    ) {
       items {
         symbol
         transactionId
@@ -71,7 +82,6 @@ export const listTransactions = /* GraphQL */ `
         currentCostBasis
         currentTotalQuantity
         currentTotalCost
-        id
         createdAt
         updatedAt
       }

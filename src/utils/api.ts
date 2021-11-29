@@ -1,36 +1,19 @@
 import { API } from "aws-amplify";
-import { SymbolPosition, TransactionRecord } from "../components/Table";
+import { SymbolPosition, TransactionRecord } from "../models/models";
 import { createSymbol, createTransaction, updateSymbol } from "../graphql/mutations";
-import { listSymbols, listTransactions } from "../graphql/queries";
+import { getSymbol, listSymbols, listTransactions } from "../graphql/queries";
 
-type AddSymbolPositionInput = {
-    symbol: string;
-    assetType: string;
-    costBasis: number;
-    quantity: number; 
-    totalCost: number;
-    transactionCount: number;
-}
-
-type UpdateSymbolPositionInput = {
-    id: string;
-    costBasis?: number;
-    quantity?: number; 
-    totalCost?: number;
-    transactionCount?: number;
-}
-
-export async function addSymbolPosition(addSymbolPositionInput: AddSymbolPositionInput) {
+export async function addSymbolPosition(symbolPosition: SymbolPosition) {
     await API.graphql({ 
         query: createSymbol, 
-        variables: { input: addSymbolPositionInput },
+        variables: { input: symbolPosition },
      });
 }
 
-export async function updateSymbolPosition(updateSymbolPositionInput: UpdateSymbolPositionInput) {
+export async function updateSymbolPosition(symbolPosition: SymbolPosition) {
     await API.graphql({ 
         query: updateSymbol, 
-        variables: { input: updateSymbolPositionInput },
+        variables: { input: symbolPosition },
      });
 }
 
@@ -54,7 +37,19 @@ export async function getAllPositions(): Promise<SymbolPosition[]> {
     return apiData.data.listSymbols.items;
 } 
 
-export async function getTransactionsBySymbol(symbol: string): Promise<TransactionRecord[]> {
+export async function getSymbolPosition(symbol?: string): Promise<SymbolPosition | null> {
+    const apiData = await API.graphql({
+        query: getSymbol,
+        variables: {symbol}
+    }) as {
+        data: {
+            getSymbol: SymbolPosition | null
+        }
+    };
+    return apiData.data.getSymbol as SymbolPosition;
+} 
+
+export async function getTransactionsBySymbol(symbol?: string): Promise<TransactionRecord[]> {
     const filter = {
         symbol: {eq: symbol}
     };
@@ -63,10 +58,10 @@ export async function getTransactionsBySymbol(symbol: string): Promise<Transacti
         variables: {filter} 
     }) as {
         data: {
-            listTransactionsBySymbol: {
+            listTransactions: {
                 items: TransactionRecord[];
             }
         }
     };
-    return apiData.data.listTransactionsBySymbol.items;
+    return apiData.data.listTransactions.items;
 }

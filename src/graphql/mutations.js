@@ -7,7 +7,6 @@ export const createSymbol = /* GraphQL */ `
     $condition: ModelSymbolConditionInput
   ) {
     createSymbol(input: $input, condition: $condition) {
-      id
       symbol
       assetType
       costBasis
@@ -25,7 +24,6 @@ export const updateSymbol = /* GraphQL */ `
     $condition: ModelSymbolConditionInput
   ) {
     updateSymbol(input: $input, condition: $condition) {
-      id
       symbol
       assetType
       costBasis
@@ -43,7 +41,6 @@ export const deleteSymbol = /* GraphQL */ `
     $condition: ModelSymbolConditionInput
   ) {
     deleteSymbol(input: $input, condition: $condition) {
-      id
       symbol
       assetType
       costBasis
@@ -69,7 +66,6 @@ export const createTransaction = /* GraphQL */ `
       currentCostBasis
       currentTotalQuantity
       currentTotalCost
-      id
       createdAt
       updatedAt
     }
@@ -89,7 +85,6 @@ export const updateTransaction = /* GraphQL */ `
       currentCostBasis
       currentTotalQuantity
       currentTotalCost
-      id
       createdAt
       updatedAt
     }
@@ -109,7 +104,6 @@ export const deleteTransaction = /* GraphQL */ `
       currentCostBasis
       currentTotalQuantity
       currentTotalCost
-      id
       createdAt
       updatedAt
     }

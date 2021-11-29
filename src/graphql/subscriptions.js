@@ -4,7 +4,6 @@
 export const onCreateSymbol = /* GraphQL */ `
   subscription OnCreateSymbol {
     onCreateSymbol {
-      id
       symbol
       assetType
       costBasis
@@ -19,7 +18,6 @@ export const onCreateSymbol = /* GraphQL */ `
 export const onUpdateSymbol = /* GraphQL */ `
   subscription OnUpdateSymbol {
     onUpdateSymbol {
-      id
       symbol
       assetType
       costBasis
@@ -34,7 +32,6 @@ export const onUpdateSymbol = /* GraphQL */ `
 export const onDeleteSymbol = /* GraphQL */ `
   subscription OnDeleteSymbol {
     onDeleteSymbol {
-      id
       symbol
       assetType
       costBasis
@@ -57,7 +54,6 @@ export const onCreateTransaction = /* GraphQL */ `
       currentCostBasis
       currentTotalQuantity
       currentTotalCost
-      id
       createdAt
       updatedAt
     }
@@ -74,7 +70,6 @@ export const onUpdateTransaction = /* GraphQL */ `
       currentCostBasis
       currentTotalQuantity
       currentTotalCost
-      id
       createdAt
       updatedAt
     }
@@ -91,7 +86,6 @@ export const onDeleteTransaction = /* GraphQL */ `
       currentCostBasis
       currentTotalQuantity
       currentTotalCost
-      id
       createdAt
       updatedAt
     }
